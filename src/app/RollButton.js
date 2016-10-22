@@ -1,6 +1,6 @@
 class RollButtonController {
   constructor() {
-    this.editing = false;
+    this.counter = 0;
   }
 
   rollRandom() {
@@ -9,6 +9,7 @@ class RollButtonController {
   }
 
   getRandomInt(min, max) {
+    this.counter++;
     return Math.floor(Math.random() * (max + 1 - min)) + min;
   }
 
@@ -20,6 +21,6 @@ export const RollButton = {
   bindings: {
     onRoll: '&',
     maxRoll: '<',
-    gameOver: '<'
+    gameStatus: '<'
   }
 };

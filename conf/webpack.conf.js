@@ -7,14 +7,6 @@ const autoprefixer = require('autoprefixer');
 
 module.exports = {
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint'
-      }
-    ],
-
     loaders: [
       {
         test: /.json$/,
@@ -44,7 +36,11 @@ module.exports = {
         loaders: [
           'html'
         ]
-      }
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loader:'file'
+      },
     ]
   },
   plugins: [

@@ -8,16 +8,31 @@ class MainSectionController {
     this.flatRollList = [];
     this.partialScore = 0;
     this.gameOver = false;
+    this.extraRoll = 0;
+    this.gameStatus = 'STARTED'; // started || over || extraRound1 || extraRound2
   }
 
   updateFrame(pinsDown) {
-    if (!this.gameOver) {
-      this.countRoll(pinsDown);
-      this.addUpBonuses(this.previousIndex);
-      this.updateScore();
-      this.checkTurn();
-    } else {
-      this.resetScore();
+    switch (this.gameStatus) {
+      case 'STARTED':
+        this.countRoll(pinsDown);
+        this.addUpBonuses(this.previousIndex);
+        this.updateScore();
+        this.checkTurn();
+        break;
+      case 'OVER':
+        this.resetScore();
+        break;
+      case 'EXTRA_ROUND_1':
+        this.addFirstBonus(pinsDown);
+        this.updateScore();
+        break;
+      case 'EXTRA_ROUND_2':
+        this.addSecondBonus(pinsDown);
+        this.updateScore();
+        break;
+      default:
+        break;
     }
   }
 
@@ -33,12 +48,12 @@ class MainSectionController {
         };
         this.currentIndex++;
       } else {
-        this.frames[this.currentIndex] = { firstRoll: pinsDown };
+        this.frames[this.currentIndex] = {firstRoll: pinsDown};
         this.maxRoll = 10 - pinsDown;
       }
     } else {
       this.frames[this.currentIndex].secondRoll = pinsDown;
-      if (this.frames[this.currentIndex].firstRoll + this.frames[this.currentIndex].secondRoll === 10){
+      if (this.frames[this.currentIndex].firstRoll + this.frames[this.currentIndex].secondRoll === 10) {
         this.frames[this.currentIndex].scoreSum = '-';
       } else {
         this.frames[this.currentIndex].scoreSum = this.frames[this.currentIndex].firstRoll + this.frames[this.currentIndex].secondRoll;
@@ -50,29 +65,27 @@ class MainSectionController {
   }
 
   addUpBonuses(index) {
-    const lastFrame = this.frames[index-1];
-    const preLastFrame = this.frames[index-2];
-    const rollsLength = this.flatRollList.length
+    const lastFrame = this.frames[index - 1];
+    const preLastFrame = this.frames[index - 2];
+    const rollsLength = this.flatRollList.length;
     // if last one was spare add bonus
-    if ( !!lastFrame && lastFrame.scoreSum === '-' && lastFrame.firstRoll !== 'X') {
-      lastFrame.scoreSum = this.flatRollList[rollsLength-1] + 10;
+    if (!!lastFrame && lastFrame.scoreSum === '-' && lastFrame.firstRoll !== 'X') {
+      lastFrame.scoreSum = this.flatRollList[rollsLength - 1] + 10;
     }
-    //if last frame was a strike
-    if ( !!lastFrame && lastFrame.firstRoll === 'X') {
+    // if last frame was a strike
+    if (!!lastFrame && lastFrame.firstRoll === 'X') {
       // check previous frame
-      if (!!preLastFrame && preLastFrame.firstRoll === 'X') {
-        preLastFrame.scoreSum = this.flatRollList[rollsLength-1] + 20;
-      } else {
-        if (this.frames[index].hasOwnProperty('secondRoll') && this.frames[index].firstRoll !== 'X') {
-          lastFrame.scoreSum = this.flatRollList[rollsLength-1] + this.flatRollList[rollsLength-2] + 10;
-        }
+      if (!!preLastFrame && preLastFrame.scoreSum === '-') {
+        preLastFrame.scoreSum = this.flatRollList[rollsLength - 1] + 20;
+      } else if (this.frames[index].hasOwnProperty('secondRoll') && this.frames[index].firstRoll !== 'X') {
+        lastFrame.scoreSum = this.flatRollList[rollsLength - 1] + this.flatRollList[rollsLength - 2] + 10;
       }
     }
   }
 
-  updateScore(){
-    this.partialScore = this.frames.reduce( (prev, next, index) =>{
-      if (!!next.scoreSum && !isNaN(parseInt(next.scoreSum))) {
+  updateScore() {
+    this.partialScore = this.frames.reduce((prev, next) => {
+      if (!!next.scoreSum && !isNaN(parseInt(next.scoreSum, 10))) {
         return prev + next.scoreSum;
       } else {
         return prev;
@@ -81,9 +94,33 @@ class MainSectionController {
   }
 
   checkTurn() {
-    if (this.currentIndex > 9 ) {
-      this.gameOver = true;
+    if (this.currentIndex > 9) {
+      if (this.frames[9].scoreSum !== '-') {
+        this.gameOver = true;
+        this.gameStatus = 'OVER';
+      } else {
+        this.gameStatus = 'EXTRA_ROUND_1';
+      }
     }
+  }
+
+  addFirstBonus(pinsDown) {
+    if (this.frames[9].firstRoll === 'X') {
+      this.frames[9].secondRoll = pinsDown;
+      this.gameStatus = 'EXTRA_ROUND_2';
+    } else {
+      this.extraRoll = pinsDown;
+      this.frames[9].scoreSum = 10 + pinsDown;
+      this.gameOver = true;
+      this.gameStatus = 'OVER';
+    }
+  }
+
+  addSecondBonus(pinsDown) {
+    this.extraRoll = pinsDown;
+    this.frames[9].scoreSum = 10 + this.frames[9].secondRoll + pinsDown;
+    this.gameOver = true;
+    this.gameStatus = 'OVER';
   }
 
   resetScore() {
@@ -94,6 +131,8 @@ class MainSectionController {
     this.flatRollList = [];
     this.partialScore = 0;
     this.gameOver = false;
+    this.extraRoll = 0;
+    this.gameStatus = 'STARTED';
   }
 
 }

@@ -32,6 +32,17 @@ body {
   font-weight: 300;
 }
 
+h1 {
+  font-size: 3rem;
+  font-weight: 300;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
 .frame {
   border: 1px solid #000;
   position: relative;
@@ -67,11 +78,20 @@ body {
     width: 100%;
     border-top: 1px solid #000;
   }
+
+  &--extra-roll {
+    right: -32px;
+    border: 1px solid #000;
+    width: 50%;
+    height: 100%;
+    top: -1px;
+  }
 }
 
 .roll-button {
   background-color: #444;
   color: #f4f4f4;
+  display: block;
   padding: 0.5rem;
   font-weight: bold;
   border-radius: 33px;
@@ -79,4 +99,62 @@ body {
   cursor: pointer;
   font-size: 24px;
   min-width: 65px;
+  margin: 2.5rem auto;
+}
+
+.pins {
+  position: relative;
+  display: block;
+  height: 200px;
+  width: 158px;
+  margin: 4rem auto 0;
+}
+
+.pin {
+  background: url(./media/pin.png) no-repeat;
+  background-size: 100%;
+  width: 32px;
+  height: 96px;
+  position: absolute;
+
+  &__0 {
+    top: 0;
+    left: 0;
+  }
+  &__1 {
+    top: 0;
+    left: 42px;
+  }
+  &__2 {
+    top: 0;
+    left: 84px;
+  }
+  &__3 {
+    top: 0;
+    left: 126px;
+  }
+  &__4 {
+    top: 35px;
+    left: 26px;
+  }
+  &__5 {
+    top: 35px;
+    left: 68px;
+  }
+  &__6 {
+    top: 35px;
+    left: 110px;
+  }
+  &__7 {
+    top: 70px;
+    left: 42px;
+  }
+  &__8 {
+    top: 70px;
+    left: 84px;
+  }
+  &__9 {
+    top: 105px;
+    left: 68px;
+  }
 }
