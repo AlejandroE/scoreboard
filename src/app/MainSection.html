@@ -1,0 +1,12 @@
+<section class="main">
+
+  <div ng-repeat="frame in $ctrl.frames" class="frame">
+    <span class="frame--first-roll">{{frame.firstRoll}}</span>
+    <span class="frame--second-roll">{{frame.secondRoll}}</span>
+    <span class="frame--score">{{frame.scoreSum}}</span>
+  </div>
+
+  <score-board score='$ctrl.partialScore'></score-board> <br>
+  <roll-button on-roll='$ctrl.updateFrame($event.score)' max-roll='$ctrl.maxRoll' game-over='$ctrl.gameOver'></roll-button>
+
+</section>
